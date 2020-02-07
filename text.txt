@@ -1,0 +1,57 @@
+<?php
+ define('DB_HOST', 'localhost');
+                     define('DB_USER', 'id12160516_restaurant');
+                     define('DB_PASS', '123456789p');
+                     define('DB_NAME', 'id12160516_restaurant');
+
+                      $response = array();
+                      
+                      $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+                      if (mysqli_connect_errno()){
+                      echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                      die();
+                      }else{
+                        $sql = "select DISTINCT tableno FROM Customers ORDER by id DESC";
+                        $query = mysqli_query($conn,$sql);
+                        if(mysqli_num_rows($query)>0){
+                          $i = 0;
+                          $arrData = array();
+                          $arrTemp = array();
+                          $arrTables = array();
+                          while ($res=mysqli_fetch_array($query)) {
+                            $i++;
+                            $arrTables[] = $res['tableno'];
+                            //$tableno = $res['tableno'];
+                            
+                          }
+
+                          // end while loop
+                          $arrResult = array();
+
+                          if(!empty($arrTables)){
+                            foreach ($arrTables as $key => $value) {
+                              $sql = "SELECT * FROM Customers where tableno = '$value' ";
+                              $query = mysqli_query($conn,$sql);
+
+                              if(mysqli_num_rows($query) > 0){
+
+                                while ($res=mysqli_fetch_array($query)) {
+                                  $data['food'] =  $res['food'];
+                                  $data['price'] =  $res['fprice'];
+                                  $data['quantity'] =  $res['quantity'];
+                                  $arrData[$value][] = $data; 
+                                 
+                                }
+                                
+                              }
+                            }
+                          }
+                         
+                        } 
+                      }
+
+ echo '<pre>';
+ print_r($arrData);
+ echo json_encode($arrData);
+ die;
+?>
